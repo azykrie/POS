@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Livewire\Transaction;
+
 use App\Models\Order;
 use App\Models\Product;
 use Livewire\Component;
@@ -21,27 +22,49 @@ class Table extends Component
             'product_id' => 'required|exists:products,id|unique:transactions,product_id',
         ]);
 
+        $product = Product::find($this->product_id);
+
+        // Check if the product stock is greater than 0
+        if ($product->stock <= 0) {
+            session()->flash('stock', 'Product is out of stock');
+            return;
+        }
+
+        // Lakukan transaksi jika stok tersedia
         $transaction = Transaction::create([
             'product_id' => $this->product_id,
             'quantity' => 1,
             'total' => 0,
         ]);
 
+        $product->update(['stock' => $product->stock - 1]);
+
         $transaction->total = $transaction->product->price;
-        $transaction->Save();
+        $transaction->save();
         $this->reset('product_id');
         session()->flash('message', 'Product added successfully');
     }
 
+
     public function increment($id)
     {
         $transaction = Transaction::find($id);
+        $product = Product::find($transaction->product_id);
+
+        if ($product->stock <= 0) {
+            session()->flash('stock', 'Product is out of stock');
+            return;
+        }
+
         $transaction->update([
             'quantity' => $transaction->quantity + 1,
             'total' => $transaction->product->price * ($transaction->quantity + 1)
         ]);
+
+        $product->update(['stock' => $product->stock - 1]);
         session()->flash('message', 'Product added successfully');
     }
+
 
     public function decrement($id)
     {
@@ -50,11 +73,17 @@ class Table extends Component
             'quantity' => $transaction->quantity - 1,
             'total' => $transaction->product->price * ($transaction->quantity - 1)
         ]);
+
+        $product = Product::find($transaction->product_id);
+        $product->update(['stock' => $product->stock + 1]);
         session()->flash('message', 'Product has been successfully reduced');
     }
 
     public function delete($id)
     {
+        $transaction = Transaction::find($id);
+        $product = Product::find($transaction->product_id);
+        $product->update(['stock' => $product->stock + $transaction->quantity]);
         Transaction::find($id)->delete();
         session()->flash('message', 'Product has been successfully deleted');
     }

@@ -31,7 +31,7 @@
                                 <thead>
                                     <tr>
                                         <th width="5%">NO</th>
-                                        <th width="5%">NAME</th>
+                                        <th width="5%">NAME CATEGORY</th>
                                         <th width="5%">ACTION</th>
                                     </tr>
                                 </thead>

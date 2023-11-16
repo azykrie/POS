@@ -16,7 +16,7 @@
                                     <tr>
                                         <th width="5%">NO</th>
                                         <th width="5%">ORDER NO</th>
-                                        <th width="5%">CASHIER</th>
+                                        <th width="5%">NAME CASHIER</th>
                                         <th width="5%">CREATED AT</th>
                                         <th width="5%">ACTION</th>
                                     </tr>
@@ -27,7 +27,7 @@
                                             <th scope="row">{{ $loop->iteration }}</th>
                                             <td>{{ $order->order_no}}</td>
                                             <td>{{ $order->cashier_name}}</td>
-                                            <td>{{ $order->created_at}}</td>
+                                            <td>{{ $order->created_at->format('d-m-Y')}}</td>
                                             <td>
                                                 <button wire:click='show({{ $order->id }})' type="button"
                                                     class="btn btn-warning">SHOW</button>

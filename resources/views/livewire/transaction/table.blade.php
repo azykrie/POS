@@ -40,6 +40,11 @@
                                     {{ session('message') }}
                                 </div>
                             @endif
+                            @if (session()->has('stock'))
+                            <div class="alert alert-danger">
+                                {{ session('stock') }}
+                            </div>
+                        @endif
                         </div>
 
 
@@ -93,19 +98,25 @@
                         <div class="card-body p-0">
                             <table id="example2" class="table table-bordered table-striped">
                                 <div class="card-body">
-                                    <label>Total Trnsaksi</label>
+                                    <label>Total Transaction</label>
                                     <input value="Rp. {{ number_format($transactions->sum('total')) }}" type="text"
                                         class="form-control" disabled>
-                                    <label>Bayar</label>
+                                    <label>Pay</label>
                                     <input type="number" wire:model.live='pay' class="form-control">
-                                    <label>Kemabalian</label>
-                                    <input value="Rp. {{ number_format($pay - $transactions->sum('total')) }}"
-                                        type="text" class="form-control" disabled>
+                                    <label>Change</label>
+                                    @php
+                                        $formattedPay = intval($pay); // Konversi $pay menjadi integer
+                                        $formattedTotal = intval($transactions->sum('total')); // Konversi total transaksi menjadi integer
+                                        $kemabalian = $formattedPay - $formattedTotal;
+                                    @endphp
+
+                                    <input value="Rp. {{ number_format($kemabalian) }}" type="text"
+                                        class="form-control" disabled>
                                 </div>
                                 <div class="card-body">
                                     @if (!empty($transaction))
-                                    <a href="{{ url('transaction/invoice') }}" class="btn btn-warning">Print</a>
-                                    @endif  
+                                        <a href="{{ url('transaction/invoice') }}" class="btn btn-warning">Print</a>
+                                    @endif
                                     <button wire:click='save' type="submit" class="btn btn-info">Pay</button>
                                 </div>
                             </table>
@@ -122,6 +133,5 @@
                 width: 40%;
                 display: inline;
             }
-            
         </style>
 </div>
