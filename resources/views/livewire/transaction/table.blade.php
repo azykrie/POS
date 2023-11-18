@@ -102,7 +102,7 @@
                                     <input value="Rp. {{ number_format($transactions->sum('total')) }}" type="text"
                                         class="form-control" disabled>
                                     <label>Pay</label>
-                                    <input type="number" wire:model.live='pay' class="form-control">
+                                    <input wire:model='pay' type="number" wire:model.live='pay' class="form-control">
                                     <label>Change</label>
                                     @php
                                         $formattedPay = intval($pay); // Konversi $pay menjadi integer

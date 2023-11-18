@@ -3,6 +3,7 @@
 namespace App\Livewire\Transaction;
 
 use App\Models\Order;
+use App\Models\Payment;
 use App\Models\Product;
 use Livewire\Component;
 use App\Models\Transaction;
@@ -93,6 +94,11 @@ class Table extends Component
         $order = Order::create([
             'order_no' =>  'OD-' . date('Ymd') . rand(1111, 9999),
             'cashier_name' => auth()->user()->name,
+        ]);
+
+        $payment = Payment::create([
+            'order_id' => $order->id,
+            'pay' => $this->pay,
         ]);
 
         $transaction = Transaction::get();
